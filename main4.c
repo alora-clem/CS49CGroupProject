@@ -273,59 +273,68 @@ int verification(){
     //number of tries to enter password
     int tries = 3;
     printf("Hello, welcome to Password Generator!\n");
-    //flag to determine if the user has been verified
-    int verified = 1;
+    //flags to determine if the user has been verified
+    int bothVerified = 0;
+    int usernameVerified = 0;
+    int passwordVerified = 0;
     //loop to check equality of user input and user information file
-    while(verified != -1){
-        verified = 1;
-        printf("Enter your username:\n");
-        scanf("%s", inputtedUsername);
-        for(int i = 0; i < 10; i ++){
-            char f = fileUserName[i];
-            char in = inputtedUsername[i];
-            if(f != in){
-                puts("Incorrect Username, try again");
-                //reset inputterUsername
-                for(int j = 0; j <= i; j ++){
-                    inputtedUsername[j] = 0;
-                }
-                verified = 0;
-                break;
-            }
-        }
-        if(verified == 1){
-            //passed the username section now onto password verification
-            printf("Enter your password:\n");
-            scanf("%s", inputtedPassword);
+    while (bothVerified == 0) {
+        while (usernameVerified == 0) {
+            printf("Enter your username:\n");
+            scanf("%s", inputtedUsername);
             for(int i = 0; i < 10; i ++){
-                char f = filePassword[i];
-                char in = inputtedPassword[i];
+                char f = fileUserName[i];
+                char in = inputtedUsername[i];
                 if(f != in){
-                    tries--;
-                    //reset inputtedPassword
+                    puts("Incorrect Username, try again");
+                    //reset inputterUsername
                     for(int j = 0; j <= i; j ++){
-                        inputtedPassword[j] = 0;
+                        inputtedUsername[j] = 0;
                     }
-                    if(tries>0){
-                        printf("Incorrect Password, %d tries left\n", tries);
-                    }
-                    else{
-                        puts("Incorrect Password, you have run out of tries, come back later\n");
-                        //whole program needs to be ended, the user is locked out
-                        return 0;
-                    }
-                    verified = 0;
                     break;
                 }
+                else if(i == 9){
+                    usernameVerified = 1;
+                }
             }
         }
-        if(verified == 1){
+        if(usernameVerified == 1){
+            while (passwordVerified == 0) {
+                    //passed the username section now onto password verification
+                    printf("Enter your password:\n");
+                    scanf("%s", inputtedPassword);
+                    for(int i = 0; i < 10; i ++){
+                        char f = filePassword[i];
+                        char in = inputtedPassword[i];
+                        if(f != in){
+                            tries--;
+                            //reset inputtedPassword
+                            for(int j = 0; j <= i; j ++){
+                                inputtedPassword[j] = 0;
+                            }
+                            if(tries>0){
+                                printf("Incorrect Password, %d tries left\n", tries);
+                            }
+                            else{
+                                puts("Incorrect Password, you have run out of tries, come back later\n");
+                                //whole program needs to be ended, the user is locked out
+                                return 0;
+                            }
+                            break;
+                        }
+                        else if(i == 9){
+                            passwordVerified = 1;
+                        }
+                    }
+                }
+            }
+        if (usernameVerified == 1 && passwordVerified == 1) {
+            //to break out of loop
+            bothVerified = 1;
             puts("Correct, logged in");
             puts("-------------------------");
-            //to break out of loop
-            verified = -1;
+            }
         }
-    }
     return 1;
     //verified
 }
