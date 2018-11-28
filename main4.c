@@ -23,7 +23,6 @@ int main(int argc, const char * argv[]) {
     //password file creation
     FILE* passwordFile;
     passwordFile = fopen("/Users/aclem/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/passwords.txt", "w");
-    fprintf(passwordFile, "Website:             Password:\n");
     fclose(passwordFile);
     
     //verify username and password
@@ -215,9 +214,12 @@ void savePassword(FILE* passwordFile, char pass[50]) {
         }
     }
     passwordFile = fopen("/Users/aclem/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/passwords.txt", "a");
-    fprintf(passwordFile, "%s             %s\n", website, pass);
+    fprintf(passwordFile, "Website: %s\n", website);
+    fprintf(passwordFile, "Password: %s\n", pass);
+    fprintf(passwordFile, "-------------------------\n");
     fclose(passwordFile);
     puts("Combination saved");
+    puts("-------------------------");
 }
 
 void export(FILE* passwordFile) {
@@ -319,6 +321,7 @@ int verification(){
         }
         if(verified == 1){
             puts("Correct, logged in");
+            puts("-------------------------");
             //to break out of loop
             verified = -1;
         }
