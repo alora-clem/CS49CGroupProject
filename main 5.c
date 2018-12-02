@@ -25,13 +25,13 @@ void display(FILE* passwordFile);
 int main(int argc, const char * argv[]) {
 
 	srand((unsigned int)time(NULL));
-	
 
-	put("----- Password Generator -----\n\n");
-	put("Welcome to the Password Generator! This program will generate randomized passwords to secure your accounts, save your website/password combinations, and export these to a file in your specified path.\n");
-	put("Instructions:");
-	put("1. Your file path should include direct access to a file labeled userInfo.txt for your login information.");
-	put("2. If you have never used this program, press 1 to create a file to export your password and website combinations."
+
+	printf("----- Password Generator -----\n\n\n");
+	printf("Welcome to the Password Generator! This program will generate randomized passwords to secure your accounts, save your website/password combinations, and export these to a file in your specified path.\n\n");
+	printf("Instructions:\n\n");
+	printf("1. Your file path should include direct access to a file labeled userInfo.txt for your login information.\n");
+	printf("2. If you have never used this program, press 1 to create a file to export your password and website combinations."
 		"If you have used this program previously, you will have a passwords.txt file, if you would like to overwrite it press 1, or press 0 to add more combinations.\n");
 
 	FILE* passwordFile;
@@ -49,10 +49,10 @@ int main(int argc, const char * argv[]) {
 	}
 
 	char filePath;
-	put("\nWould you like to specify a file path? [Y/N]");
+	printf("\nWould you like to specify a file path? [Y/N]");
 	scanf("%c", &filePath);
 	if (filePath != 'Y' || filePath != 'N') {
-		put("Error incorect input, please enter Y for yes or N for no.");
+		printf("Error incorect input, please enter Y for yes or N for no.\n");
 		scanf("%d", &filePath);
 	}
 
@@ -119,7 +119,7 @@ int main(int argc, const char * argv[]) {
 			else {
 				export(passwordFile);
 			}
-			
+
 		}
 		//case 4: displaying password - website combinations
 		else if (input == 4) {
@@ -327,7 +327,7 @@ void display(FILE* passwordFile) {
 		printf("%c", ch);
 	}
 	fclose(passwordFile);
-	put("");
+	printf("");
 }
 
 int verification() {
