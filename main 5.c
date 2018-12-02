@@ -25,24 +25,52 @@ void display(FILE* passwordFile);
 int main(int argc, const char * argv[]) {
 
 	srand((unsigned int)time(NULL));
-	//password file creation
+	
+
+	put("----- Password Generator -----\n\n");
+	put("Welcome to the Password Generator! This program will generate randomized passwords to secure your accounts, save your website/password combinations, and export these to a file in your specified path.\n");
+	put("Instructions:");
+	put("1. Your file path should include direct access to a file labeled userInfo.txt for your login information.");
+	put("2. If you have never used this program, press 1 to create a file to export your password and website combinations."
+		"If you have used this program previously, you will have a passwords.txt file, if you would like to overwrite it press 1, or press 0 to add more combinations.\n");
 
 	FILE* passwordFile;
+	int fileEdit;
+	scanf("%d", &fileEdit);
 
-	/**
-	char *filePath;
-	int checkFilePath = 0;
-	printf("Press 1 to specify a file path.\n");
-	scanf("%d", &checkFilePath);
-	if (checkFilePath == 1) {
-		printf("Enter file path: \n");
-		scanf("%s", filePath);
+	//password file creation/overwrite or append
+	if (fileEdit == 1) {
+		passwordFile = fopen("/Users/sihra/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/passwords.txt", "w");
+		fclose(passwordFile);
 	}
-	**/
+	else {
+		passwordFile = fopen("/Users/sihra/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/passwords.txt", "a");
+		fclose(passwordFile);
+	}
 
-	passwordFile = fopen("/Users/sihra/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/passwords.txt", "w");
-	fclose(passwordFile);
+	char filePath;
+	put("\nWould you like to specify a file path? [Y/N]");
+	scanf("%c", &filePath);
+	if (filePath != 'Y' || filePath != 'N') {
+		put("Error incorect input, please enter Y for yes or N for no.");
+		scanf("%d", &filePath);
+	}
 
+	if (filePath == 'Y') {
+		/**
+		This has errors but I'm working on it now. Just let me know if you think this isn't useful.
+
+		char *filePath;
+		int checkFilePath = 0;
+		printf("Press 1 to specify a file path.\n");
+		scanf("%d", &checkFilePath);
+		if (checkFilePath == 1) {
+			printf("Enter file path: \n");
+			scanf("%s", filePath);
+		}
+		**/
+
+	}
 
 	//verify username and password
 	int verify = verification();
@@ -73,15 +101,25 @@ int main(int argc, const char * argv[]) {
 		}
 		//case 3: exporting your combinations to a file
 		else if (input == 3) {
-			printf("Warning: Exporting your current combinations will overwrite this file. To continue, press 1. To exit, press 0\n");
-			int check;
-			scanf("%d", &check);
-			if (check == 1) {
+
+			// If the user specified they wanted to overwrite the file in the beginning or create it, this program will just give an error notice in case
+			if (fileEdit == 1) {
+				printf("Warning: Exporting your current combinations will create a passwords.txt file in your file path and overwrite it. To continue, press 1. To exit, press 0\n");
+				int check;
+				scanf("%d", &check);
+				if (check == 1) {
+					export(passwordFile);
+				}
+				if (check != 1) {
+
+				}
+			}
+
+			// There's no warning if the user just wanted to append an existing file
+			else {
 				export(passwordFile);
 			}
-			if (check != 1) {
-
-			}
+			
 		}
 		//case 4: displaying password - website combinations
 		else if (input == 4) {
@@ -268,7 +306,9 @@ void savePassword(FILE* passwordFile, char pass[50]) {
 void export(FILE* passwordFile) {
 	puts("Your file is titled passwords.txt and contains all combinations");
 	puts("It's file path is: /Users/aclem/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/passwords.txt");
-	puts("Warning: if you would like to keep the file, copy it to another location before running Password Generator again");
+
+	// Remove this if we want to allow users to edit or overwrite passwords file
+	puts("Warning: if you would like to keep the file, copy it to another location before running Password Generator again\n");
 }
 void printMenu() {
 	printf("Press 1 for generating a new password on its own\n");
@@ -280,15 +320,14 @@ void printMenu() {
 
 void display(FILE* passwordFile) {
 
-	printf("here");
+	printf("\n\nCurrrent Account Password Combinations\n");
 	char ch;
-	FILE *fptr = fopen(passwordFile, "r");
-	ch = fgetc(fptr);
+	passwordFile = fopen("/Users/sihra/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/passwords.txt", "r");
 	while ((ch = fgetc(passwordFile)) != EOF) {
 		printf("%c", ch);
-		ch = fgetc(fptr);
 	}
 	fclose(passwordFile);
+	put("");
 }
 
 int verification() {
