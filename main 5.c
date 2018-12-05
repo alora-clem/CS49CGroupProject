@@ -132,7 +132,6 @@ int main(int argc, const char * argv[]) {
 
 	// If the user has NEVER used this program before, a new passwords.txt file will be created
 	else {
-		printf("here");
 		printf("\nA new file \"passwords.txt\" will be created in your file path.\n");
 		passwordsTXT = fopen(passwordFile, "w");
 		fclose(passwordsTXT);
