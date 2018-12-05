@@ -54,11 +54,10 @@ int main(int argc, const char * argv[]) {
 	// ******Delete: I'm not sure why program will crash if I don't press Y/N, statement below with a while statement should work??
 
 	// Checks if user input either Y for yes or N for no
-	if (check != yes && check != no) {
+	while (check != yes && check != no) {
 		printf("Error incorect input, please enter Y for yes or N for no.\n");
-		scanf("%d", &check);
+		scanf("%s", &check);
 	}
-
 	// If the user inputs Y, then file path will be updated
 	if (check == yes) {
 		printf("\nSpecify your file path:  ");
@@ -67,10 +66,16 @@ int main(int argc, const char * argv[]) {
 
 		//Run method to output userInfo.txt filePath
 		setFiles();
+
+		// DELETE: Alora these are tests to make sure it's working for you
+		printf("\nHere's the path you included: %s \n", filePath);
+		printf("Here's your user file, the one used to check if the path exists: %s \n", userFile);
+
+		// We check if the file path contains userInfo.txt because it is required from the program and passwords.txt will be generated if it doesn't exist
 		FILE* checkFilePath = fopen(userFile, "r");
 
-		// Checks if the user specified file path is accessible
-		if (checkFilePath == NULL) {
+		// Checks if the user specified file path is accessible and continuously asks if there's an error
+		while (checkFilePath == NULL) {
 			printf("\n\nError: Specified file path does not exist, enter the correct path:  ");
 			scanf("%s", filePath);
 			setFiles();
@@ -87,20 +92,19 @@ int main(int argc, const char * argv[]) {
 	}
 
 	// 2. Ask user if they have used this program in the past
-	printf("Have you used this program before? [Y/N]\n");
+
+	printf("Have you used this program before? [Y/N] \n");
+	//printf("[Y/N]  \n");
 	scanf("%s", &check);
 
+
 	// Checks if input is not Y or N
-	if (check != yes && check != no) {
+	while (check != yes && check != no) {
 		printf("Error incorect input, please enter Y for yes or N for no.\n");
-		scanf("%d", &check);
+		scanf("%s", &check);
 	}
-
-
 	// ****** DELETE: I changed FILE* passwordFile to passwordsTXT because I accidentally matched the variable name to the instance variable. Same code just a different name.
 	FILE* passwordsTXT;
-	int fileEdit;
-	scanf("%d", &fileEdit);
 
 	// If the user has used this program before, their passwords.txt file will either be appended or overwritten
 	if (check == yes) {
@@ -108,26 +112,27 @@ int main(int argc, const char * argv[]) {
 		scanf("%s", &check);
 
 		// Checks if input is not Y or N
-		if (check != yes && check != no) {
+		while (check != yes && check != no) {
 			printf("Error incorect input, please enter Y for yes or N for no.\n");
-			scanf("%d", &check);
+			scanf("%s", &check);
 		}
 
 		// If the user wants to overwrite their passwords.txt file
-		else if (check == yes) {
+		if (check == yes) {
 			passwordsTXT = fopen(passwordFile, "w");
 			fclose(passwordsTXT);
 		}
 
 		// IF the user wants to append/add to their passwords.txt file
-		else if (check == no) {
+		else {
 			passwordsTXT = fopen(passwordFile, "a");
 			fclose(passwordsTXT);
 		}
 	}
 
 	// If the user has NEVER used this program before, a new passwords.txt file will be created
-	else if (check == no) {
+	else {
+		printf("here");
 		printf("\nA new file \"passwords.txt\" will be created in your file path.\n");
 		passwordsTXT = fopen(passwordFile, "w");
 		fclose(passwordsTXT);
@@ -146,7 +151,7 @@ int main(int argc, const char * argv[]) {
 	int input = 0;
 	scanf("%d", &input);
 	//check that input is valid
-	while (input < 1 || input > 5) {
+	while (input < 1 || input > 6) {
 		printf("Error incorect input, please pick a number from 1 to 4");
 		scanf("%d", &input);
 	}
@@ -461,7 +466,7 @@ int verification() {
 	char inputtedPassword[10] = { 0 };
 	//number of tries to enter password
 	int tries = 3;
-	printf("Hello, welcome to Password Generator!\n");
+	printf("\n---------- Login ----------\n");
 	//flags to determine if the user has been verified
 	int bothVerified = 0;
 	int usernameVerified = 0;
@@ -469,13 +474,13 @@ int verification() {
 	//loop to check equality of user input and user information file
 	while (bothVerified == 0) {
 		while (usernameVerified == 0) {
-			printf("Enter your username:\n");
+			printf("\nEnter your username:\n");
 			scanf("%s", inputtedUsername);
 			for (int i = 0; i < 10; i++) {
 				char f = fileUserName[i];
 				char in = inputtedUsername[i];
 				if (f != in) {
-					puts("Incorrect Username, try again");
+					puts("Incorrect Username, try again\n");
 					//reset inputterUsername
 					for (int j = 0; j <= i; j++) {
 						inputtedUsername[j] = 0;
@@ -490,7 +495,7 @@ int verification() {
 		if (usernameVerified == 1) {
 			while (passwordVerified == 0) {
 				//passed the username section now onto password verification
-				printf("Enter your password:\n");
+				printf("\nEnter your password:\n");
 				scanf("%s", inputtedPassword);
 				for (int i = 0; i < 10; i++) {
 					char f = filePassword[i];
@@ -520,7 +525,7 @@ int verification() {
 		if (usernameVerified == 1 && passwordVerified == 1) {
 			//to break out of loop
 			bothVerified = 1;
-			puts("Correct, logged in");
+			puts("\nCorrect, logged in\n");
 			puts("-------------------------");
 		}
 	}
