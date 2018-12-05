@@ -1,4 +1,6 @@
 //
+//  Password Generator
+//
 //  CS 49C Term Project
 //	Section 1
 //
@@ -23,13 +25,6 @@ char filePath[1000];
 char passwordFile[1000];
 char userFile[1000];
 
-/**
-	Default File Paths
-
-		Unspecified File Path: /Users/aclem/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj
-		User Info File Path: /Users/aclem/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/userInfo.txt
-		Passwords File Path: /Users/aclem/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj/passwords.txt
-**/
 
 int main(int argc, const char * argv[]) {
 
@@ -46,52 +41,29 @@ int main(int argc, const char * argv[]) {
 	printf("1. There is a folder in your preferred file path to specify where your exported file for website/password combinations should go.\n");
 	printf("2. There is a file, \" userInfo.txt \", that contains your username and password on two seperate files in the specified folder from 1.\n\n");
 
-	printf("* The default file path will be used if not specified. *\n");
-
 	// 1. Asking user to specify their file path
-	printf("Do you want to specify your own file path to the folder containing \"userInfo.txt\"? [Y/N]\n");
+	printf("Specify your own file path to the folder containing \"userInfo.txt\".\n");
 	char check;
-	scanf("%s", &check);
 	char yes = 'Y';
 	char no = 'N';
 
-	// Checks if user input either Y for yes or N for no
-	while (check != yes && check != no) {
-		printf("Error incorect input, please enter Y for yes or N for no.\n");
-		scanf("%s", &check);
-	}
-	// If the user inputs Y, then file path will be updated
-	if (check == yes) {
-		printf("\nSpecify your file path:  ");
-		printf("Enter file path: \n");
+	printf("Enter file path: ");
+	scanf("%s", filePath);
+
+	//Run method to output userInfo.txt filePath
+	setFiles();
+
+	// We check if the file path contains userInfo.txt because it is required from the program and passwords.txt will be generated if it doesn't exist
+	FILE* checkFilePath = fopen(userFile, "r");
+
+	// Checks if the user specified file path is accessible and continuously asks if there's an error
+	while (checkFilePath == NULL) {
+		printf("\n\nError: Specified file path does not exist, enter the correct path:  ");
 		scanf("%s", filePath);
-
-		//Run method to output userInfo.txt filePath
 		setFiles();
-
-		// **********DELETE: Alora these are tests to make sure it's working for you
-		printf("\nHere's the path you included: %s \n", filePath);
-		printf("Here's your user file, the one used to check if the path exists: %s \n", userFile);
-
-		// We check if the file path contains userInfo.txt because it is required from the program and passwords.txt will be generated if it doesn't exist
-		FILE* checkFilePath = fopen(userFile, "r");
-
-		// Checks if the user specified file path is accessible and continuously asks if there's an error
-		while (checkFilePath == NULL) {
-			printf("\n\nError: Specified file path does not exist, enter the correct path:  ");
-			scanf("%s", filePath);
-			setFiles();
-            checkFilePath = fopen(userFile, "r");
-		}
-		printf("\n");
-
+		checkFilePath = fopen(userFile, "r");
 	}
-	else {
-		// Default file path - Used when connected to "main source", also listed above
-		char *defaultPath = "/Users/aclem/Desktop/cs49c/CS49CgrpPrj/CS49CgrpPrj/en.lproj";
-		strncpy(filePath, defaultPath, sizeof(filePath));
-		setFiles();
-	}
+	printf("\n");
 
 	// 2. Ask user if they have used this program in the past
 	printf("Have you used this program before? [Y/N] \n");
@@ -137,7 +109,6 @@ int main(int argc, const char * argv[]) {
 		fclose(passwordsTXT);
 	}
 
-
 	// Verify username and password
 	int verify = verification();
 	if (verify == 0) {
@@ -153,7 +124,7 @@ int main(int argc, const char * argv[]) {
 
 	// Check that input is valid
 	while (input < 1 || input > 6) {
-		printf("Error incorect input, please pick a number from 1 to 4");
+		printf("Error incorect input, please pick a number from 1 to 5");
 		scanf("%d", &input);
 	}
 
@@ -187,11 +158,12 @@ int main(int argc, const char * argv[]) {
 	Method that generates the randomized password suited to user specifications of a length under 50 and the amount of letters, uppercase letters, and numbers
 **/
 void generatePassword(FILE *passwordFile) {
-	printf("How many characters total would you like your password to be? You can generate up to a max of 50 length\n");
+	printf("\nHow many characters total would you like your password to be? You can generate up to a max of 50 length.\n");
 
 	// User specified length of the password
 	int length = 0;
 	scanf("%d", &length);
+
 	while (length < 1) {
 		printf("Error incorect input, please pick a number greater than 0\n");
 		scanf("%d", &length);
@@ -203,7 +175,7 @@ void generatePassword(FILE *passwordFile) {
 
 	// Count to track how many total characters are already used
 	int characterCount = 0;
-	printf("How many should be letters? ");
+	printf("\nHow many should be letters? ");
 
 	// Count to track how many letters wanted
 	int letters = 0;
@@ -220,7 +192,7 @@ void generatePassword(FILE *passwordFile) {
 	// If the user wanted more than 0 letters, the dialog for uppercase letters will show
 	if (characterCount != 0) {
 		if (letters > 0) {
-			printf("How many should be uppercase? ");
+			printf("\nHow many should be uppercase? ");
 			scanf("%d", &upper);
 			if (upper > letters) {
 				printf("Error incorect input, please pick a number of %d or less\n", letters);
@@ -234,7 +206,7 @@ void generatePassword(FILE *passwordFile) {
 
 	// If the user did not account for the password to be all letters, then the dialog for numbers will show
 	if (characterCount < length) {
-		printf("How many should be numbers? ");
+		printf("\nHow many should be numbers? ");
 		scanf("%d", &numbers);
 		if ((numbers + characterCount) > length) {
 			printf("Error incorect input, please pick a number of %d or less\n", (length - characterCount));
@@ -248,7 +220,7 @@ void generatePassword(FILE *passwordFile) {
 
 	// If the user's password still has "space" for more characters, this dialog will run
 	if (characterCount != length) {
-		printf("Special characters will fill the rest of the password: ");
+		printf("\nSpecial characters will fill the rest of the password: ");
 		special = length - characterCount;
 		printf("%d\n", special);
 		characterCount += special;
@@ -323,7 +295,7 @@ void generatePassword(FILE *passwordFile) {
 		pass[i] = pass[randIndex];
 		pass[randIndex] = temp;
 	}
-	puts("GENERATED PASSWORD:");
+	puts("\n\nGENERATED PASSWORD:");
 	for (int i = 0; i < length; i++)
 	{
 		printf("%c", pass[i]);
@@ -345,7 +317,7 @@ void generatePassword(FILE *passwordFile) {
 **/
 void savePassword(FILE* passwordTXT, char pass[50]) {
 	char website[50] = { 0 };
-	printf("What is the website's URL?:\n");
+	printf("\nWhat is the website's URL?:  ");
 	scanf("%s", website);
 
 	// Check contents of password to see if it is prefilled or empty
@@ -356,7 +328,7 @@ void savePassword(FILE* passwordTXT, char pass[50]) {
 		}
 		else if (i == 49) {
 			// iterated and had all 0's therefore empty password
-			printf("What is the website's password?:");
+			printf("\nWhat is the website's password?:  ");
 			scanf("%s", pass);
 		}
 	}
@@ -367,7 +339,7 @@ void savePassword(FILE* passwordTXT, char pass[50]) {
 	fprintf(passwordTXT, "Password: %s\n", pass);
 	fprintf(passwordTXT, "-------------------------\n");
 	fclose(passwordTXT);
-	puts("Combination saved");
+	puts("\nCombination saved");
 	puts("-------------------------");
 }
 
@@ -375,8 +347,10 @@ void savePassword(FILE* passwordTXT, char pass[50]) {
 	Method that exports the file to the specified file path
 **/
 void export(char passwordFile[1000]) {
+	puts("\n-------------------------");
 	puts("Your file is titled passwords.txt and contains all combinations");
-	printf("It's file path is: %s\n", passwordFile);
+	printf("It's file path is: %s", passwordFile);
+	puts("\n-------------------------\n");
 }
 
 void printMenu() {
@@ -414,6 +388,7 @@ void setFiles() {
 void display(FILE* passwordTXT) {
 
 	printf("\n\nCurrrent Account Password Combinations\n");
+	puts("-------------------------");
 	char ch;
 	passwordTXT = fopen(passwordFile, "r");
 	while ((ch = fgetc(passwordTXT)) != EOF) {
